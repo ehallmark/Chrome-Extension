@@ -202,23 +202,6 @@ let postUrls = [];
           let allAnchorsArray = Array.from(allAnchors);
           let allStrongArray = Array.from(allStrong);
 
-
-          var s = document.createElement('script');
-          s.innerHTML =  '(function(open) { var elem = document.getElementById("post-urls-productmafia"); if (!elem) { elem = document.createElement("div"); elem.id = "post-urls-productmafia"; elem.style.display = "none"; elem.innerText = JSON.stringify([]); document.body.appendChild(elem); } XMLHttpRequest.prototype.open = function() { this.addEventListener("readystatechange", function(e) { if (this.readyState == 4 && this.status == 200) { responseURL = this.responseURL; if (!responseURL.endsWith("/video/unified_cvc/")) { return; } returnedData = JSON.parse(this.responseText.replace("for (;;);", ""))["payload"]["vi"]; link = "https://www.facebook.com/watch/?v="+returnedData; links = JSON.parse(elem.innerText); if (links.length == 0 || links[0] != link) { links.push(link); elem.innerText = JSON.stringify(links); console.log("Found link: "+link); } } }, false); open.apply(this, arguments); }; })(XMLHttpRequest.prototype.open);';
-          s.onload = function() {
-            this.remove();
-          };
-          (document.head || document.documentElement).appendChild(s);
-
-
-          infoButtons = e.querySelectorAll('div div [role="button"]')
-          var event = document.createEvent("HTMLEvents");
-          event.initEvent("click", false, true);
-          event.eventName = "click";
-          for(var i = 0; i < infoButtons.length; i++) {
-            infoButtons[i].dispatchEvent(event);
-          }
-
           if (e.querySelectorAll("div div a div div div span").length > 0) {
             actualSite = e.querySelectorAll("div div a div div div span")[0]
               .innerText;
@@ -386,12 +369,38 @@ let postUrls = [];
           ) {
             e.style.display = "none";
           }
+
+          function click(x,y){
+              var ev = document.createEvent("MouseEvent");
+              var el = document.elementFromPoint(x,y);
+              ev.initMouseEvent(
+                  "mousedown",
+                  true /* bubble */, true /* cancelable */,
+                  window, null,
+                  x, y, 0, 0, /* coordinates */
+                  false, false, false, false, /* modifier keys */
+                  0 /*left*/, null
+              );
+              el.dispatchEvent(ev);
+          }
+
           // new icon image, images array, video url
           setTimeout(() => {
             if (e.getElementsByTagName("video").length > 0) {
               videoEl = e.getElementsByTagName("video")[0];
               videoUrl = videoEl.getAttribute("src");
             }
+
+            var s = document.createElement('script');
+            s.innerHTML =  '(function(open) { var elem = document.getElementById("post-urls-productmafia"); if (!elem) { elem = document.createElement("div"); elem.id = "post-urls-productmafia"; elem.style.display = "none"; elem.innerText = JSON.stringify([]); document.body.appendChild(elem); } XMLHttpRequest.prototype.open = function() { this.addEventListener("readystatechange", function(e) { if (this.readyState == 4 && this.status == 200) { responseURL = this.responseURL; if (!responseURL.endsWith("/video/unified_cvc/")) { return; } returnedData = JSON.parse(this.responseText.replace("for (;;);", ""))["payload"]["vi"]; link = "https://www.facebook.com/watch/?v="+returnedData; links = JSON.parse(elem.innerText); if (links.length == 0 || links[0] != link) { links.push(link); elem.innerText = JSON.stringify(links); console.log("Found link: "+link); } } }, false); open.apply(this, arguments); }; })(XMLHttpRequest.prototype.open);';
+            s.onload = function() {
+              this.remove();
+            };
+            (document.head || document.documentElement).appendChild(s);
+            videoEl.setAttribute("autoplay", "true");
+            videoEl.autoplay = true;
+            document.querySelector("div[role=main]").click();
+            click(0,0);
 
             if (document.getElementById("post-urls-productmafia")) {
               urlsDiv = document.getElementById("post-urls-productmafia");

@@ -102,7 +102,7 @@ window.onload = function () {
   // Autoscroll
   autoscroll_toggle.addEventListener("change", (event) => {
     if (autoscroll_toggle.checked) {
-      chrome.storage.sync.set({ autoscroll_status: 1 });
+      chrome.storage.sync.set({ autoscroll_status: 1 });      
     } else {
       chrome.storage.sync.set({ autoscroll_status: 0 });
     }
